@@ -9,7 +9,8 @@
   <!-- Google Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght=0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght=300;400;500;600&display=swap" rel="stylesheet">
+  
   <style>
     body {
       font-family: 'Plus Jakarta Sans', sans-serif;
@@ -56,7 +57,7 @@
 
     /* Glow effects */
     .gold-glow {
-      box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+      box-shadow: 0 0 25px rgba(212, 175, 55, 0.3);
     }
 
     /* Envelope Transitions */
@@ -120,7 +121,7 @@
   <!-- Main Display Area -->
   <main class="flex-1 flex flex-col items-center justify-center px-4 py-8 z-10 w-full max-w-4xl mx-auto">
     
-    <!-- Intro / Opening Screen: Elegant Envelope (Most prominent on mobile for magical buildup) -->
+    <!-- Intro / Opening Screen: Elegant Envelope -->
     <div id="envelopeSection" class="w-full max-w-sm mx-auto flex flex-col items-center justify-center transition-all duration-1000">
       <h2 class="serif-title text-2xl md:text-3xl text-center mb-6 text-slate-300">You have a beautiful letter waiting...</h2>
       
@@ -157,14 +158,14 @@
       <!-- Interactive Photo Area (Circular with Gold Glow) -->
       <div class="relative group mb-6 cursor-pointer" onclick="triggerLoveBurst(event)">
         <!-- Floating hearts generator indicator -->
-        <div class="absolute -top-3 -left-3 bg-red-500 text-white rounded-full p-1.5 shadow-lg animate-bounce">
+        <div class="absolute -top-3 -left-3 bg-red-500 text-white rounded-full p-1.5 shadow-lg animate-bounce z-10">
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
         </div>
 
         <!-- 50% Rounded Main Photo Frame -->
-        <div class="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-yellow-500/60 p-1 bg-slate-950 overflow-hidden shadow-xl gold-glow relative transition-transform duration-500 group-hover:scale-105">
-          <!-- Circular Picture inside -->
-          <img id="rituPhoto" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400" alt="Ritu's Photo" class="w-full h-full object-cover rounded-full" onerror="handleImageError(this)">
+        <div class="w-44 h-44 md:w-52 md:h-52 rounded-full border-4 border-yellow-500/70 p-1 bg-slate-950 overflow-hidden shadow-2xl gold-glow relative transition-transform duration-500 group-hover:scale-105">
+          <!-- Circular Picture inside - Configured with Ritu's Google Drive Direct URL -->
+          <img id="rituPhoto" src="https://lh3.googleusercontent.com/d/1Z-lCZgPy_tqzGNQo6FnvpiQXgC8n74F2" alt="Ritu's Photo" class="w-full h-full object-cover rounded-full" onerror="handleImageError(this)">
         </div>
 
         <!-- Trigger interactive heart burst upon photo tap -->
@@ -173,7 +174,7 @@
         </div>
       </div>
 
-      <!-- Main Elegant Letter Display (Optimized text sizing for beautiful vertical flow) -->
+      <!-- Main Elegant Letter Display -->
       <div class="w-full text-center space-y-6 md:space-y-8 select-none">
         
         <!-- Header -->
@@ -182,7 +183,7 @@
           <span class="text-xs text-slate-400 uppercase tracking-widest font-semibold font-mono block">On your 13th of June</span>
         </div>
 
-        <!-- The Poem Content (Indented, beautifully typeset) -->
+        <!-- The Poem Content -->
         <div class="space-y-4 md:space-y-6 text-slate-200 leading-relaxed text-sm md:text-base tracking-wide max-w-sm mx-auto">
           <p class="transition-all duration-1000 hover:text-yellow-100">
             Today is your special day,<br>
@@ -396,9 +397,18 @@
       }, 1000);
     }
 
-    // Fallback Image handling
+    // Direct Image Fallback Handling to prevent broken visuals
     function handleImageError(img) {
-      img.src = "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&q=80&w=400";
+      const secondTryUrl = "https://drive.google.com/uc?export=view&id=1Z-lCZgPy_tqzGNQo6FnvpiQXgC8n74F2";
+      const finalBackupUrl = "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&q=80&w=400";
+      
+      if (img.src !== secondTryUrl && img.src.includes('googleusercontent')) {
+        // Try the alternative Google Drive direct source
+        img.src = secondTryUrl;
+      } else {
+        // Safe visual fallback in case sharing settings on Drive prevent loading
+        img.src = finalBackupUrl;
+      }
     }
 
     // Playful Heart Burst Trigger (Tapping on photo spawns beautiful floating hearts)

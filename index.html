@@ -12,9 +12,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght=0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght=300;400;500;600;700&display=swap" rel="stylesheet">
   
   <style>
-    /* Mobile App Shell Reset */
+    /* Mobile App Shell Reset - LOCK SCREEN HEIGHT */
     html, body {
-      height: 100%;
+      height: 100dvh;
       margin: 0;
       padding: 0;
       overflow: hidden;
@@ -28,18 +28,6 @@
     }
     .cursive {
       font-family: 'Great Vibes', cursive;
-    }
-    
-    /* Scrollbar Styling for Scrollable Body */
-    .app-scrollable::-webkit-scrollbar {
-      width: 4px;
-    }
-    .app-scrollable::-webkit-scrollbar-track {
-      background: rgba(11, 21, 40, 0.3);
-    }
-    .app-scrollable::-webkit-scrollbar-thumb {
-      background: rgba(212, 175, 55, 0.25);
-      border-radius: 2px;
     }
 
     /* Gold text luxury effects */
@@ -58,7 +46,7 @@
 
     /* Elegant Pulse Glows */
     .gold-glow {
-      box-shadow: 0 0 25px rgba(212, 175, 55, 0.2);
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
     }
 
     /* Interactive Envelope Elements */
@@ -71,7 +59,7 @@
       transform-style: preserve-3d;
     }
     .envelope.open {
-      transform: translateY(120px) rotateX(5deg);
+      transform: translateY(80px) rotateX(5deg);
     }
     .flap {
       position: absolute;
@@ -109,29 +97,30 @@
     }
   </style>
 </head>
-<body class="text-slate-100 flex flex-col justify-between relative overflow-hidden select-none">
+<body class="text-slate-100 flex flex-col justify-between relative overflow-hidden select-none w-full h-[100dvh]">
 
   <canvas id="starfield" class="absolute inset-0 pointer-events-none z-0"></canvas>
 
-  <header class="w-full h-16 flex-none px-6 flex justify-between items-center z-30 border-b border-white/10 backdrop-blur-md bg-slate-950/60 safe-top">
+  <!-- Header Section -->
+  <header class="w-full h-14 flex-none px-4 flex justify-between items-center z-30 border-b border-white/10 backdrop-blur-md bg-slate-950/60 safe-top">
     <div class="flex items-center gap-2">
-      <div class="w-8 h-8 rounded-full bg-gradient-to-tr from-yellow-600 to-amber-400 flex items-center justify-center font-bold text-slate-950 text-xs shadow-md">
+      <div class="w-7 h-7 rounded-full bg-gradient-to-tr from-yellow-600 to-amber-400 flex items-center justify-center font-bold text-slate-950 text-xs shadow-md">
         R
       </div>
-      <span class="text-lg font-bold tracking-widest gold-text-shimmer serif-title">RITU • SPECIAL</span>
+      <span class="text-base font-bold tracking-widest gold-text-shimmer serif-title">RITU • SPECIAL</span>
     </div>
     
     <!-- Music Button Controls -->
-    <div class="flex items-center gap-3">
-      <button id="musicToggleBtn" class="px-3.5 py-2 rounded-full bg-slate-900/90 border border-yellow-500/40 text-yellow-500 hover:text-yellow-400 hover:border-yellow-400 transition-all duration-300 flex items-center gap-2 text-xs font-semibold shadow-lg active:scale-95" title="Play Loving Piano Melody">
+    <div class="flex items-center gap-2">
+      <button id="musicToggleBtn" class="px-3 py-1.5 rounded-full bg-slate-900/90 border border-yellow-500/40 text-yellow-500 hover:text-yellow-400 hover:border-yellow-400 transition-all duration-300 flex items-center gap-1.5 text-[11px] font-semibold shadow-lg active:scale-95" title="Play Loving Piano Melody">
         <!-- Visualizer Bars when playing, simple icon when paused -->
-        <div id="visualizer" class="flex items-end gap-0.5 h-4 w-5 hidden">
+        <div id="visualizer" class="flex items-end gap-0.5 h-3 w-4 hidden">
           <div class="bar"></div>
           <div class="bar"></div>
           <div class="bar"></div>
           <div class="bar"></div>
         </div>
-        <svg id="musicPlayIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <svg id="musicPlayIcon" class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/>
         </svg>
         <span id="musicBtnText">Loving Piano</span>
@@ -139,44 +128,46 @@
     </div>
   </header>
 
-  <div id="toast" class="fixed top-20 right-4 left-4 bg-slate-950/95 border border-yellow-500/50 text-slate-100 px-4 py-3 rounded-2xl shadow-2xl transition-all duration-500 transform translate-y-[-150%] opacity-0 z-50 flex items-center gap-3">
-    <div class="w-2 h-2 rounded-full bg-yellow-400 animate-ping"></div>
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed top-16 right-4 left-4 bg-slate-950/95 border border-yellow-500/50 text-slate-100 px-3 py-2.5 rounded-xl shadow-2xl transition-all duration-500 transform translate-y-[-150%] opacity-0 z-50 flex items-center gap-3">
+    <div class="w-1.5 h-1.5 rounded-full bg-yellow-400 animate-ping"></div>
     <div class="flex-1">
       <p id="toastMessage" class="text-xs font-medium tracking-wide text-slate-300"></p>
     </div>
     <button onclick="hideToast()" class="text-slate-400 hover:text-slate-200">
-      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+      <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
     </button>
   </div>
 
-  <main class="flex-1 overflow-y-auto app-scrollable relative z-10 w-full flex flex-col items-center justify-start px-4 py-6 md:py-10">
+  <!-- Main content wrapper locked to screen boundaries with no internal scrollbar -->
+  <main class="flex-1 overflow-hidden relative z-10 w-full flex flex-col items-center justify-center px-4 py-2">
     
     <!-- Outer Envelope Section (Initial State) -->
-    <div id="envelopeSection" class="w-full max-w-sm mx-auto my-auto flex flex-col items-center justify-center transition-all duration-1000 py-4">
-      <div class="text-center mb-6 space-y-1">
-        <h2 class="serif-title text-2xl md:text-3xl text-slate-200">For Your Eyes Only</h2>
-        <p class="text-xs text-yellow-500/70 tracking-widest font-semibold uppercase">A special celebration letter</p>
+    <div id="envelopeSection" class="w-full max-w-xs mx-auto flex flex-col items-center justify-center transition-all duration-1000 py-2">
+      <div class="text-center mb-4 space-y-0.5">
+        <h2 class="serif-title text-xl md:text-2xl text-slate-200">For Your Eyes Only</h2>
+        <p class="text-[10px] text-yellow-500/70 tracking-widest font-semibold uppercase">A special celebration letter</p>
       </div>
       
       <!-- Interactive Envelope -->
-      <div class="envelope-wrapper w-full aspect-[4/3] max-w-[300px] relative cursor-pointer" onclick="openLetter()">
-        <div class="absolute -inset-2 bg-gradient-to-tr from-yellow-500/20 to-rose-500/10 rounded-2xl blur-xl animate-pulse"></div>
+      <div class="envelope-wrapper w-full aspect-[4/3] max-w-[260px] relative cursor-pointer" onclick="openLetter()">
+        <div class="absolute -inset-1 bg-gradient-to-tr from-yellow-500/20 to-rose-500/10 rounded-xl blur-lg animate-pulse"></div>
         
-        <div id="mailEnvelope" class="w-full h-full bg-slate-900 border border-yellow-500/30 rounded-2xl shadow-2xl relative overflow-visible flex flex-col justify-end p-6">
+        <div id="mailEnvelope" class="w-full h-full bg-slate-900 border border-yellow-500/30 rounded-xl shadow-2xl relative overflow-visible flex flex-col justify-end p-4">
           <!-- The Envelope Flap -->
           <div class="flap"></div>
           
           <!-- Inner letter preview -->
-          <div class="absolute inset-x-4 top-2 bottom-4 bg-slate-800/90 rounded-t-xl border-t border-x border-yellow-500/30 transition-all duration-500 transform translate-y-2 z-2 flex flex-col items-center justify-center text-center p-4">
-            <span class="cursive text-3xl gold-text-shimmer">Ritu</span>
+          <div class="absolute inset-x-3 top-2.5 bottom-3.5 bg-slate-800/90 rounded-t-lg border-t border-x border-yellow-500/30 transition-all duration-500 transform translate-y-2 z-2 flex flex-col items-center justify-center text-center p-2">
+            <span class="cursive text-2xl gold-text-shimmer">Ritu</span>
           </div>
           
           <!-- Front Body -->
-          <div class="absolute inset-0 bg-slate-950/80 rounded-2xl z-4 border border-yellow-500/20 flex flex-col justify-end p-4 shadow-[inset_0_2px_10px_rgba(255,255,255,0.05)]">
+          <div class="absolute inset-0 bg-slate-950/80 rounded-xl z-4 border border-yellow-500/20 flex flex-col justify-end p-3 shadow-[inset_0_2px_10px_rgba(255,255,255,0.05)]">
             <div class="flex justify-between items-center w-full">
-              <span class="text-[10px] text-yellow-500/70 font-mono tracking-widest">JUNE 13, 2026</span>
-              <div class="w-9 h-9 rounded-full bg-yellow-500/10 border border-yellow-500/40 flex items-center justify-center animate-bounce">
-                <svg class="w-4 h-4 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <span class="text-[8px] text-yellow-500/70 font-mono tracking-widest">JUNE 13, 2026</span>
+              <div class="w-7 h-7 rounded-full bg-yellow-500/10 border border-yellow-500/40 flex items-center justify-center animate-bounce">
+                <svg class="w-3.5 h-3.5 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z"/>
                 </svg>
               </div>
@@ -185,81 +176,73 @@
         </div>
       </div>
       
-      <p class="text-xs text-slate-400 mt-6 animate-pulse tracking-wide">Tap the elegant envelope to read</p>
+      <p class="text-[10px] text-slate-400 mt-4 animate-pulse tracking-wide">Tap the elegant envelope to read</p>
     </div>
 
-    <!-- Letter Content (Revealed with animation) -->
-    <div id="letterCard" class="hidden w-full max-w-md bg-slate-950/70 border border-yellow-500/25 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-2xl flex flex-col items-center transition-all duration-1000 transform scale-95 opacity-0">
+    <!-- Letter Content (Revealed with animation - designed for Zero-Scroll viewport fit) -->
+    <div id="letterCard" class="hidden w-full max-w-[340px] sm:max-w-[400px] bg-slate-950/75 border border-yellow-500/25 rounded-2xl p-4 md:p-5 backdrop-blur-md shadow-2xl flex flex-col items-center justify-between transition-all duration-1000 transform scale-95 opacity-0 overflow-hidden max-h-[82vh]">
       
-      <!-- Interactive Portrait Frame -->
-      <div class="relative group mb-6 cursor-pointer" onclick="triggerLoveBurst(event)">
+      <!-- Interactive Portrait Frame (Sized compactly to fit screen perfectly) -->
+      <div class="relative group mb-3 cursor-pointer flex-none" onclick="triggerLoveBurst(event)">
         <!-- Floating indicator -->
-        <div class="absolute -top-1 -left-1 bg-rose-500 text-white rounded-full p-2 shadow-lg animate-bounce z-10">
-          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
+        <div class="absolute -top-1 -left-1 bg-rose-500 text-white rounded-full p-1.5 shadow-lg animate-bounce z-10">
+          <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
           </svg>
         </div>
 
-        <!-- 50% Circular Portrait with Golden Ring and Pink Hue -->
-        <div class="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-yellow-500/60 p-1.5 bg-slate-950 overflow-hidden shadow-2xl gold-glow relative transition-transform duration-500 group-hover:scale-105">
+        <!-- Optimized Circle Portrait Size for screen lock -->
+        <div class="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-2 border-yellow-500/60 p-1 bg-slate-950 overflow-hidden shadow-xl gold-glow relative transition-transform duration-500 group-hover:scale-105">
           <img id="rituPhoto" src="https://lh3.googleusercontent.com/d/1Z-lCZgPy_tqzGNQo6FnvpiQXgC8n74F2" alt="Ritu" class="w-full h-full object-cover rounded-full" onerror="handleImageError(this)">
         </div>
 
-        <div class="absolute -bottom-1 -right-1 bg-yellow-500 text-slate-950 p-2 rounded-full shadow-lg transition-all duration-300">
-          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+        <div class="absolute -bottom-1 -right-1 bg-yellow-500 text-slate-950 p-1.5 rounded-full shadow-lg transition-all duration-300">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20">
             <path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/>
           </svg>
         </div>
       </div>
 
-      <!-- Scrollable Letter Body inside the App -->
-      <div class="w-full text-center space-y-6 select-none">
-        <div class="space-y-1">
-          <span class="cursive text-4xl text-yellow-500 block">Dear Ritu,</span>
-          <span class="text-[10px] text-slate-400 uppercase tracking-widest font-semibold font-mono block">On your 13th of June</span>
+      <!-- Letter Body: Tight and concise to guarantee no scrolling -->
+      <div class="w-full text-center space-y-3 flex-1 flex flex-col justify-between">
+        <div class="space-y-0.5">
+          <span class="cursive text-3xl text-yellow-500 block leading-none">Dear Ritu,</span>
+          <span class="text-[8px] text-slate-400 uppercase tracking-widest font-semibold font-mono block">On your 13th of June</span>
         </div>
 
-        <!-- Poem blocks -->
-        <div class="space-y-5 text-slate-200 leading-relaxed text-sm md:text-base tracking-wide max-w-sm mx-auto font-light">
-          <p class="hover:text-yellow-100 transition-colors duration-300">
+        <!-- Highly optimized non-overflowing Poem layout -->
+        <div class="space-y-2.5 text-slate-200 leading-snug text-[11px] sm:text-xs tracking-wide max-w-xs mx-auto font-light">
+          <p class="hover:text-yellow-100 transition-colors duration-200">
             Today is your special day,<br>
             So I have a little prayer to say.<br>
             May your smile never fade away,<br>
             May happiness walk with you every day.
           </p>
-          <p class="hover:text-yellow-100 transition-colors duration-300">
+          <p class="hover:text-yellow-100 transition-colors duration-200">
             May your dreams find wings to fly,<br>
             Like stars shining in the midnight sky.<br>
             Thank you for the love you give,<br>
             Making every moment beautiful to live.
           </p>
-          <p class="hover:text-yellow-100 transition-colors duration-300">
-            On this 13th of June, my heart says true,<br>
-            The world feels brighter because of you.
-          </p>
           
-          <div class="py-2">
-            <span class="serif-title text-xl md:text-2xl text-yellow-500 font-bold tracking-wide block animate-pulse">
+          <div class="py-1">
+            <span class="serif-title text-base sm:text-lg text-yellow-500 font-bold tracking-wide block animate-pulse">
               Happy Birthday, my love.
             </span>
           </div>
-
-          <p class="hover:text-yellow-100 transition-colors duration-300 text-xs text-slate-400">
-            May this year bring endless joy,<br>
-            And may your heart always be filled with light.
-          </p>
         </div>
 
         <!-- Signature with Sweet Ending -->
-        <div class="pt-6 border-t border-white/10 w-3/4 mx-auto">
-          <p class="cursive text-3xl text-yellow-500">Forever yours, Neel ❤️</p>
+        <div class="pt-2 border-t border-white/10 w-2/3 mx-auto flex-none">
+          <p class="cursive text-2xl text-yellow-500">Forever yours, Neel ❤️</p>
         </div>
       </div>
 
     </div>
   </main>
 
-  <footer class="w-full h-12 flex-none flex items-center justify-center text-[10px] text-slate-500 tracking-wider border-t border-white/5 z-30 bg-slate-950/80 safe-bottom backdrop-blur-md">
+  <!-- Footer fits snugly on bottom without triggering viewport overflow -->
+  <footer class="w-full h-10 flex-none flex items-center justify-center text-[9px] text-slate-500 tracking-wider border-t border-white/5 z-30 bg-slate-950/80 safe-bottom backdrop-blur-md">
     RITU • 13th JUNE SPECIAL EDITION • FOREVER
   </footer>
 
@@ -280,7 +263,7 @@
       
       setTimeout(() => {
         hideToast();
-      }, 5000);
+      }, 4000);
     }
 
     function hideToast() {
@@ -297,7 +280,7 @@
     function initCanvas() {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      createStars(60);
+      createStars(40); // Slightly fewer stars for better performance and screen clarity
     }
 
     class StarParticle {
@@ -309,15 +292,15 @@
       reset() {
         this.x = Math.random() * canvas.width;
         this.y = Math.random() * canvas.height;
-        this.size = Math.random() * (this.isHeart ? 14 : 2) + 1;
-        this.speedX = (Math.random() - 0.5) * 0.2;
-        this.speedY = (Math.random() * 0.4) + (this.isHeart ? 0.8 : 0.1);
-        this.opacity = Math.random() * 0.6 + 0.4;
-        this.fade = Math.random() * 0.008 + 0.002;
+        this.size = Math.random() * (this.isHeart ? 10 : 1.5) + 1;
+        this.speedX = (Math.random() - 0.5) * 0.15;
+        this.speedY = (Math.random() * 0.3) + (this.isHeart ? 0.6 : 0.08);
+        this.opacity = Math.random() * 0.5 + 0.4;
+        this.fade = Math.random() * 0.006 + 0.003;
         
-        // Loving pink/crimson hues for hearts, warm white/gold for stars
+        // Loving pink/crimson hues for hearts, warm gold/amber for stars
         this.color = this.isHeart 
-          ? `hsla(${Math.random() * 20 + 340}, 100%, 70%, ${this.opacity})` 
+          ? `hsla(${Math.random() * 20 + 340}, 100%, 72%, ${this.opacity})` 
           : `rgba(253, 224, 71, ${this.opacity})`;
       }
 
@@ -371,10 +354,10 @@
       const startY = y || canvas.height * 0.7;
       for (let i = 0; i < count; i++) {
         const heart = new StarParticle(true);
-        heart.x = startX + (Math.random() - 0.5) * 50;
-        heart.y = startY + (Math.random() - 0.5) * 30;
-        heart.speedY = -(Math.random() * 1.5 + 0.8);
-        heart.speedX = (Math.random() - 0.5) * 1.5;
+        heart.x = startX + (Math.random() - 0.5) * 40;
+        heart.y = startY + (Math.random() - 0.5) * 20;
+        heart.speedY = -(Math.random() * 1.2 + 0.6);
+        heart.speedX = (Math.random() - 0.5) * 1.2;
         particles.push(heart);
       }
     }
@@ -423,10 +406,10 @@
           letterCard.classList.remove('scale-95', 'opacity-0');
           letterCard.classList.add('scale-100', 'opacity-100');
           
-          spawnLoveHearts(40, canvas.width / 2, canvas.height / 2);
+          spawnLoveHearts(25, canvas.width / 2, canvas.height / 2);
           showToast("💖 Opened with love for Ritu");
-        }, 600);
-      }, 1000);
+        }, 500);
+      }, 800);
     }
 
     // Direct Image Fallback Handling to prevent broken visuals
@@ -445,17 +428,16 @@
     function triggerLoveBurst(event) {
       const clickX = event ? event.clientX : window.innerWidth / 2;
       const clickY = event ? event.clientY : window.innerHeight / 2;
-      spawnLoveHearts(20, clickX, clickY);
+      spawnLoveHearts(15, clickX, clickY);
       
       // Play a high, sweet piano accent note
       if (audioCtx) {
         const sweetNotes = [523.25, 587.33, 659.25, 783.99, 880.00]; // High C, D, E, G, A
         const randomNote = sweetNotes[Math.floor(Math.random() * sweetNotes.length)];
-        playPianoNote(randomNote, 1.2, 0.15);
+        playPianoNote(randomNote, 1.0, 0.12);
       }
     }
 
-    
     // Play a single note synthesized to sound like a mellow acoustic piano
     function playPianoNote(frequency, duration, volume) {
       if (!audioCtx || audioCtx.state === 'suspended') return;
@@ -481,16 +463,16 @@
 
       // Lowpass filter to soften and warm up the synth (simulating wood/felt)
       filterNode.type = 'lowpass';
-      filterNode.frequency.setValueAtTime(1000, audioCtx.currentTime);
-      filterNode.frequency.exponentialRampToValueAtTime(120, audioCtx.currentTime + duration);
+      filterNode.frequency.setValueAtTime(900, audioCtx.currentTime);
+      filterNode.frequency.exponentialRampToValueAtTime(100, audioCtx.currentTime + duration);
 
       // ADSR/Envelope for piano-like touch
       const now = audioCtx.currentTime;
       gainNode.gain.setValueAtTime(0, now);
       // Fast attack
-      gainNode.gain.linearRampToValueAtTime(volume, now + 0.015);
+      gainNode.gain.linearRampToValueAtTime(volume, now + 0.012);
       // Decaying sustain & natural release
-      gainNode.gain.exponentialRampToValueAtTime(volume * 0.1, now + 0.3);
+      gainNode.gain.exponentialRampToValueAtTime(volume * 0.08, now + 0.25);
       gainNode.gain.exponentialRampToValueAtTime(0.0001, now + duration);
 
       oscFundamental.start(now);
@@ -513,18 +495,14 @@
         // Adjust Header UI Elements
         document.getElementById('musicPlayIcon').classList.add('hidden');
         document.getElementById('visualizer').classList.remove('hidden');
-        document.getElementById('musicBtnText').textContent = "Playing Romantic Piano";
+        document.getElementById('musicBtnText').textContent = "Romantic Piano";
 
         // Romantic progressions (Chords & slow arpeggios)
         // Progression: Cmaj9 -> Am9 -> Fmaj7 -> G6
         const score = [
-          // Bar 1: C Major 9 vibe
           { bass: 130.81, melody: [261.63, 329.63, 392.00, 493.88] },
-          // Bar 2: A Minor 9 vibe
           { bass: 110.00, melody: [220.00, 261.63, 329.63, 440.00] },
-          // Bar 3: F Major 7 vibe
           { bass: 87.31, melody: [174.61, 261.63, 349.23, 440.00] },
-          // Bar 4: G Major / Sweet Dominant
           { bass: 98.00, melody: [196.00, 293.66, 392.00, 493.88] }
         ];
 
@@ -536,21 +514,20 @@
           const bar = score[step % score.length];
           
           // Play deep, warm, soft bass note on downbeat
-          playPianoNote(bar.bass, 2.5, 0.25);
+          playPianoNote(bar.bass, 2.2, 0.22);
           
           // Arpeggiate melody notes step-by-step
           bar.melody.forEach((note, index) => {
             setTimeout(() => {
               if (isPlayingMelody) {
-                // Introduce natural piano volume velocity
-                const velocity = 0.18 - (index * 0.02);
-                playPianoNote(note, 2.0, velocity);
+                const velocity = 0.15 - (index * 0.015);
+                playPianoNote(note, 1.8, velocity);
               }
-            }, index * 450); // Flowing arpeggio delay
+            }, index * 420); // Flowing arpeggio delay
           });
 
           step++;
-        }, 2200); // Speed of chords
+        }, 2100);
 
       } catch (err) {
         console.log("Audio Context could not initialize safely.");
@@ -577,7 +554,7 @@
           isPlayingMelody = true;
           document.getElementById('musicPlayIcon').classList.add('hidden');
           document.getElementById('visualizer').classList.remove('hidden');
-          document.getElementById('musicBtnText').textContent = "Playing Romantic Piano";
+          document.getElementById('musicBtnText').textContent = "Romantic Piano";
           startPianoMelody();
         } else {
           startPianoMelody();

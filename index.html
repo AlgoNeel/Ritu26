@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Happy Birthday, Ritu</title>
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Great+Vibes&family=Playfair+Display:ital,wght@0,400..700;1,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background: radial-gradient(circle at center, #0B1528 0%, #030712 100%);
+      overflow-x: hidden;
+    }
+    .serif-title {
+      font-family: 'Playfair Display', serif;
+    }
+    .cursive {
+      font-family: 'Great Vibes', cursive;
+    }
+    
+    /* Custom Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(11, 21, 40, 0.5);
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(212, 175, 55, 0.3);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: rgba(212, 175, 55, 0.5);
+    }
+
+    /* Shimmer Effect for Gold Text */
+    .gold-text-shimmer {
+      background: linear-gradient(to right, #FFE082 20%, #D4AF37 40%, #F59E0B 60%, #FFE082 80%);
+      background-size: 200% auto;
+      color: transparent;
+      -webkit-background-clip: text;
+      background-clip: text;
+      animation: shine 4s linear infinite;
+    }
+
+    @keyframes shine {
+      to {
+        background-position: 200% center;
+      }
+    }
+
+    /* Glow effects */
+    .gold-glow {
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.15);
+    }
+
+    /* Envelope Transitions */
+    .envelope-wrapper {
+      perspective: 1000px;
+    }
+    .envelope {
+      position: relative;
+      transition: transform 0.8s ease;
+      transform-style: preserve-3d;
+    }
+    .envelope.open {
+      transform: translateY(150px) rotateX(10deg);
+    }
+    .flap {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 50%;
+      background: #111e36;
+      clip-path: polygon(0 0, 50% 100%, 100% 0);
+      transform-origin: top;
+      transition: transform 0.6s ease-in-out;
+      z-index: 3;
+    }
+    .envelope.open .flap {
+      transform: rotateX(180deg);
+      z-index: 1;
+    }
+  </style>
+</head>
+<body class="text-slate-100 min-h-screen flex flex-col justify-between relative">
+
+  <!-- Interactive Starry Sky Background -->
+  <canvas id="starfield" class="absolute inset-0 pointer-events-none z-0"></canvas>
+
+  <!-- Header Nav -->
+  <header class="w-full py-4 px-6 flex justify-between items-center z-10 border-b border-white/5 backdrop-blur-sm bg-slate-950/20">
+    <div class="flex items-center gap-2">
+      <span class="text-xl font-bold tracking-wider gold-text-shimmer serif-title">R & S</span>
+    </div>
+    <div class="flex items-center gap-3">
+      <button id="musicToggleBtn" class="p-2.5 rounded-full bg-slate-900/80 border border-yellow-500/30 text-yellow-500/80 hover:text-yellow-400 hover:border-yellow-400 transition-all duration-300 flex items-center justify-center" title="Play Magical Melody">
+        <svg id="musicPlayIcon" class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19V6l12-3v13M9 19c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zm12-3c0 1.105-1.343 2-3 2s-3-.895-3-2 1.343-2 3-2 3 .895 3 2zM9 10l12-3"/></svg>
+        <svg id="musicPauseIcon" class="w-5 h-5 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- Toast Notification System -->
+  <div id="toast" class="fixed top-20 right-4 left-4 md:left-auto md:w-96 bg-slate-900/95 border-l-4 border-yellow-500 text-slate-100 px-4 py-3 rounded-r-lg shadow-2xl transition-all duration-500 transform translate-y-[-150%] opacity-0 z-50 flex items-start gap-3">
+    <div class="flex-1">
+      <p id="toastMessage" class="text-sm font-medium"></p>
+    </div>
+    <button onclick="hideToast()" class="text-slate-400 hover:text-slate-200">
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    </button>
+  </div>
+
+  <!-- Main Display Area -->
+  <main class="flex-1 flex flex-col items-center justify-center px-4 py-8 z-10 w-full max-w-4xl mx-auto">
+    
+    <!-- Intro / Opening Screen: Elegant Envelope (Most prominent on mobile for magical buildup) -->
+    <div id="envelopeSection" class="w-full max-w-sm mx-auto flex flex-col items-center justify-center transition-all duration-1000">
+      <h2 class="serif-title text-2xl md:text-3xl text-center mb-6 text-slate-300">You have a beautiful letter waiting...</h2>
+      
+      <div class="envelope-wrapper w-full aspect-[4/3] max-w-[320px] relative cursor-pointer" onclick="openLetter()">
+        <!-- Glow Backing -->
+        <div class="absolute -inset-2 bg-yellow-500/10 rounded-xl blur-xl animate-pulse"></div>
+        
+        <div id="mailEnvelope" class="w-full h-full bg-slate-900 border-2 border-yellow-500/20 rounded-xl shadow-2xl relative overflow-visible flex flex-col justify-end p-6">
+          <!-- The Flap -->
+          <div class="flap"></div>
+          
+          <!-- Inner Letter Peek -->
+          <div class="absolute inset-x-4 top-2 bottom-4 bg-slate-800/80 rounded-t-lg border-t border-x border-yellow-500/20 transition-all duration-500 transform translate-y-2 group-hover:translate-y-0 z-2 flex flex-col items-center justify-center text-center p-4">
+            <span class="cursive text-3xl gold-text-shimmer">Ritu</span>
+          </div>
+          
+          <!-- Front Body of Envelope -->
+          <div class="absolute inset-0 bg-slate-900 rounded-xl z-4 border border-yellow-500/10 flex flex-col justify-end p-4 shadow-[inset_0_2px_10px_rgba(255,255,255,0.05)]">
+            <div class="flex justify-between items-center w-full">
+              <span class="text-xs text-yellow-500/60 font-mono">13.06.2026</span>
+              <div class="w-10 h-10 rounded-full bg-yellow-500/10 border border-yellow-500/30 flex items-center justify-center animate-bounce">
+                <svg class="w-5 h-5 text-yellow-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13l-3 3m0 0l-3-3m3 3V8m0 13a9 9 0 110-18 9 9 0 010 18z"/></svg>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="text-sm text-slate-400 mt-6 animate-pulse">Tap the envelope to open your letter</p>
+    </div>
+
+    <!-- Letter Content (Hidden initially, opens with beautiful slide/fade) -->
+    <div id="letterCard" class="hidden w-full max-w-lg bg-slate-900/80 border border-yellow-500/30 rounded-3xl p-6 md:p-8 backdrop-blur-md shadow-2xl flex flex-col items-center transition-all duration-1000 transform scale-95 opacity-0">
+      
+      <!-- Interactive Photo Area (Circular with Gold Glow) -->
+      <div class="relative group mb-6 cursor-pointer" onclick="triggerLoveBurst(event)">
+        <!-- Floating hearts generator indicator -->
+        <div class="absolute -top-3 -left-3 bg-red-500 text-white rounded-full p-1.5 shadow-lg animate-bounce">
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
+        </div>
+
+        <!-- 50% Rounded Main Photo Frame -->
+        <div class="w-40 h-40 md:w-48 md:h-48 rounded-full border-4 border-yellow-500/60 p-1 bg-slate-950 overflow-hidden shadow-xl gold-glow relative transition-transform duration-500 group-hover:scale-105">
+          <!-- Circular Picture inside -->
+          <img id="rituPhoto" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=400" alt="Ritu's Photo" class="w-full h-full object-cover rounded-full" onerror="handleImageError(this)">
+        </div>
+
+        <!-- Trigger interactive heart burst upon photo tap -->
+        <div class="absolute -bottom-2 -right-2 bg-yellow-500 text-slate-950 p-2.5 rounded-full shadow-lg transition-all duration-300 transform group-hover:scale-110">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>
+        </div>
+      </div>
+
+      <!-- Main Elegant Letter Display (Optimized text sizing for beautiful vertical flow) -->
+      <div class="w-full text-center space-y-6 md:space-y-8 select-none">
+        
+        <!-- Header -->
+        <div class="space-y-1">
+          <span class="cursive text-4xl text-yellow-500 block">Dear Ritu,</span>
+          <span class="text-xs text-slate-400 uppercase tracking-widest font-semibold font-mono block">On your 13th of June</span>
+        </div>
+
+        <!-- The Poem Content (Indented, beautifully typeset) -->
+        <div class="space-y-4 md:space-y-6 text-slate-200 leading-relaxed text-sm md:text-base tracking-wide max-w-sm mx-auto">
+          <p class="transition-all duration-1000 hover:text-yellow-100">
+            Today is your special day,<br>
+            So I have a little prayer to say.<br>
+            May your smile never fade away,<br>
+            May happiness walk with you every day.
+          </p>
+          <p class="transition-all duration-1000 hover:text-yellow-100">
+            May your dreams find wings to fly,<br>
+            Like stars shining in the midnight sky.<br>
+            Thank you for the love you give,<br>
+            Making every moment beautiful to live.
+          </p>
+          <p class="transition-all duration-1000 hover:text-yellow-100">
+            On this 13th of June, my heart says true,<br>
+            The world feels brighter because of you.
+          </p>
+          <p class="serif-title text-lg md:text-xl text-yellow-500 font-bold py-2 tracking-wide block">
+            Happy Birthday, my love.
+          </p>
+          <p class="transition-all duration-1000 hover:text-yellow-100 text-xs md:text-sm text-slate-300">
+            May this year bring endless joy,<br>
+            And may your heart always be filled with light.
+          </p>
+        </div>
+
+        <!-- Signature Footer -->
+        <div class="pt-6 border-t border-white/5 w-1/2 mx-auto">
+          <p class="cursive text-3xl text-yellow-500">Forever yours Neel ❤️</p>
+        </div>
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Premium Bottom Banner -->
+  <footer class="w-full text-center py-4 text-[10px] text-slate-500 border-t border-white/5 z-10 bg-slate-950/20">
+    Designed with everlasting love for Ritu • 13th June Special Edition
+  </footer>
+
+  <!-- Application Logic -->
+  <script>
+    // Application state
+    let isEnvelopeOpen = false;
+    let audioCtx = null;
+    let melodyInterval = null;
+    let isPlayingMelody = false;
+
+    // Toast logic
+    function showToast(message) {
+      const toast = document.getElementById('toast');
+      const toastMessage = document.getElementById('toastMessage');
+      toastMessage.innerHTML = message;
+      toast.classList.remove('translate-y-[-150%]', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      
+      setTimeout(() => {
+        hideToast();
+      }, 5000);
+    }
+
+    function hideToast() {
+      const toast = document.getElementById('toast');
+      toast.classList.remove('translate-y-0', 'opacity-100');
+      toast.classList.add('translate-y-[-150%]', 'opacity-0');
+    }
+
+    // Canvas Particle System: Glowing star fields and love hearts
+    const canvas = document.getElementById('starfield');
+    const ctx = canvas.getContext('2d');
+    let particles = [];
+
+    function initCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      createStars(70);
+    }
+
+    class StarParticle {
+      constructor(isHeart = false) {
+        this.isHeart = isHeart;
+        this.reset();
+      }
+
+      reset() {
+        this.x = Math.random() * canvas.width;
+        this.y = Math.random() * canvas.height;
+        this.size = Math.random() * (this.isHeart ? 15 : 2) + 1;
+        this.speedX = (Math.random() - 0.5) * 0.3;
+        this.speedY = (Math.random() * 0.5) + (this.isHeart ? 1 : 0.2); // vertical fall
+        this.opacity = Math.random() * 0.7 + 0.3;
+        this.fade = Math.random() * 0.01 + 0.002;
+        this.color = this.isHeart 
+          ? `hsla(${Math.random() * 20 + 340}, 100%, 70%, ${this.opacity})` // soft romantic pinks/reds
+          : `rgba(255, 230, 150, ${this.opacity})`; // gold stars
+      }
+
+      update() {
+        this.x += this.speedX;
+        this.y += this.speedY;
+        if (this.isHeart) {
+          this.opacity -= this.fade;
+        }
+
+        // Wrap around boundaries
+        if (this.y > canvas.height || this.opacity <= 0) {
+          if (this.isHeart) {
+            // Remove dead heart particles
+            return false;
+          } else {
+            this.reset();
+            this.y = 0;
+          }
+        }
+        return true;
+      }
+
+      draw() {
+        ctx.fillStyle = this.color;
+        if (this.isHeart) {
+          // Draw a small vector heart
+          ctx.beginPath();
+          const d = this.size;
+          ctx.moveTo(this.x, this.y + d / 4);
+          ctx.quadraticCurveTo(this.x, this.y, this.x + d / 2, this.y);
+          ctx.quadraticCurveTo(this.x + d, this.y, this.x + d, this.y + d / 3);
+          ctx.quadraticCurveTo(this.x + d, this.y + (d * 2)/3, this.x + d / 2, this.y + d);
+          ctx.quadraticCurveTo(this.x, this.y + (d * 2)/3, this.x, this.y + d / 3);
+          ctx.closePath();
+          ctx.fill();
+        } else {
+          ctx.beginPath();
+          ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        return true;
+      }
+    }
+
+    function createStars(count) {
+      for (let i = 0; i < count; i++) {
+        particles.push(new StarParticle(false));
+      }
+    }
+
+    function spawnLoveHearts(count, x, y) {
+      const startX = x || Math.random() * canvas.width;
+      const startY = y || canvas.height * 0.8;
+      for (let i = 0; i < count; i++) {
+        const heart = new StarParticle(true);
+        heart.x = startX + (Math.random() - 0.5) * 60;
+        heart.y = startY + (Math.random() - 0.5) * 40;
+        heart.speedY = -(Math.random() * 2 + 1); // float upward
+        heart.speedX = (Math.random() - 0.5) * 2;
+        particles.push(heart);
+      }
+    }
+
+    function animateParticles() {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      particles = particles.filter(p => {
+        const alive = p.update();
+        if (alive) p.draw();
+        return alive;
+      });
+      requestAnimationFrame(animateParticles);
+    }
+
+    // Initialize environment resizing & particles
+    window.addEventListener('resize', () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    });
+
+    window.onload = function () {
+      initCanvas();
+      animateParticles();
+    };
+
+    // Card Open Mechanics
+    function openLetter() {
+      if (isEnvelopeOpen) return;
+      isEnvelopeOpen = true;
+
+      const envelope = document.getElementById('mailEnvelope');
+      envelope.classList.add('open');
+
+      // Start melodic ambient birthday song
+      startMelody();
+
+      // Fade out envelope block and bring in letter card
+      setTimeout(() => {
+        const envelopeSection = document.getElementById('envelopeSection');
+        const letterCard = document.getElementById('letterCard');
+        
+        envelopeSection.classList.add('scale-75', 'opacity-0');
+        
+        setTimeout(() => {
+          envelopeSection.classList.add('hidden');
+          letterCard.classList.remove('hidden');
+          // Trigger browser layout before starting transitions
+          void letterCard.offsetWidth;
+          letterCard.classList.remove('scale-95', 'opacity-0');
+          letterCard.classList.add('scale-100', 'opacity-100');
+          
+          // Celebrate with high romantic energy
+          spawnLoveHearts(45, canvas.width / 2, canvas.height / 2);
+          showToast("✨ Happy Birthday, Ritu!");
+        }, 600);
+      }, 1000);
+    }
+
+    // Fallback Image handling
+    function handleImageError(img) {
+      img.src = "https://images.unsplash.com/photo-1518895949257-7621c3c786d7?auto=format&fit=crop&q=80&w=400";
+    }
+
+    // Playful Heart Burst Trigger (Tapping on photo spawns beautiful floating hearts)
+    function triggerLoveBurst(event) {
+      const clickX = event ? event.clientX : window.innerWidth / 2;
+      const clickY = event ? event.clientY : window.innerHeight / 2;
+      spawnLoveHearts(25, clickX, clickY);
+      
+      // Gentle, musical love burst sound
+      if (audioCtx) {
+        playSweetBeep(659.25, 0.1, 0.1); // Mi
+        setTimeout(() => playSweetBeep(880, 0.1, 0.2), 100); // La
+      }
+    }
+
+    // Web Audio Synthesizer: Sweet, romantic background melody
+    function startMelody() {
+      if (isPlayingMelody) return;
+      
+      try {
+        const AudioContext = window.AudioContext || window.webkitAudioContext;
+        if (!AudioContext) return;
+        
+        audioCtx = new AudioContext();
+        isPlayingMelody = true;
+        document.getElementById('musicPlayIcon').classList.add('hidden');
+        document.getElementById('musicPauseIcon').classList.remove('hidden');
+
+        // Romantic simple chord progressions: G, C, D, Em
+        const notes = [
+          329.63, 349.23, 392.00, 440.00, 523.25, 587.33, 659.25, 783.99
+        ];
+        
+        let index = 0;
+        melodyInterval = setInterval(() => {
+          if (!isPlayingMelody) return;
+          // Softly play randomized melodic keys from minor/major scale of love
+          const baseFreq = notes[index % notes.length];
+          const offset = Math.random() > 0.7 ? notes[(index + 2) % notes.length] : null;
+          
+          playSweetBeep(baseFreq, 0.15, 0.5);
+          if (offset) {
+            setTimeout(() => {
+              playSweetBeep(offset, 0.1, 0.3);
+            }, 150);
+          }
+          
+          index++;
+        }, 600);
+
+      } catch (err) {
+        console.log("Audio activation failed safely.");
+      }
+    }
+
+    function stopMelody() {
+      isPlayingMelody = false;
+      document.getElementById('musicPlayIcon').classList.remove('hidden');
+      document.getElementById('musicPauseIcon').classList.add('hidden');
+      if (melodyInterval) clearInterval(melodyInterval);
+    }
+
+    // Soft synthesis generator
+    function playSweetBeep(frequency, attackTime, gainAmt) {
+      if (!audioCtx || audioCtx.state === 'suspended') return;
+      
+      const osc = audioCtx.createOscillator();
+      const gainNode = audioCtx.createGain();
+      
+      osc.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+      
+      osc.type = 'sine'; // Soft, pure tone
+      osc.frequency.value = frequency;
+      
+      const now = audioCtx.currentTime;
+      gainNode.gain.setValueAtTime(0, now);
+      gainNode.gain.linearRampToValueAtTime(gainAmt * 0.12, now + attackTime);
+      gainNode.gain.exponentialRampToValueAtTime(0.001, now + 1.2);
+      
+      osc.start(now);
+      osc.stop(now + 1.5);
+    }
+
+    // Toggle Music button manually
+    document.getElementById('musicToggleBtn').addEventListener('click', () => {
+      if (isPlayingMelody) {
+        stopMelody();
+      } else {
+        if (!audioCtx) {
+          startMelody();
+        } else if (audioCtx.state === 'suspended') {
+          audioCtx.resume();
+          isPlayingMelody = true;
+          document.getElementById('musicPlayIcon').classList.add('hidden');
+          document.getElementById('musicPauseIcon').classList.remove('hidden');
+          startMelody();
+        } else {
+          startMelody();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
